@@ -13,7 +13,16 @@ class beneficiaries(APIView):
         serializer=beneficiariesSerializer(beneficiaries1, many=True)
         return Response(serializer.data)
 
-    def post(self):  
-        pass
+def frontpage(request):
+    # request.session['fav_color'] = 'blue'
+    #form =AuthenticationForm()
+    #print ('dsaad =>  ', request.session['fav_color'])
+    return render(request,'frontpage.html')
 
 
+
+def intermediator(request):
+    # request.session['fav_color'] = 'blue'
+    #form =AuthenticationForm()
+    #print ('dsaad =>  ', request.session['fav_color'])
+    return render(request,'intermediator.html')

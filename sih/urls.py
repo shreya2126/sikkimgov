@@ -24,6 +24,8 @@ from sikkimgov import views as sikkimgov_views
 
 urlpatterns = [
     url(r'^beneficiaries/',views.beneficiaries.as_view()),
-    path('admin/', admin.site.urls)
+    path('admin/', admin.site.urls),
+    url(r'^frontpage/', views.frontpage, name="frontpage"),
+    url(r'^intermediator/$', views.intermediator, name="intermediator")
     
 ]
