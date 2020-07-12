@@ -11,6 +11,20 @@ from datetime import datetime
 from sikkimgov.models import Intermediatorloginform
 
 @csrf_exempt
+def signup(request):
+    content = json.loads(request.body.decode('utf-8'))
+    print ('dasdasd  =>  ', content)
+    emp = employees.objects.create(
+        firstname = content['firstname'],
+        lastname = content['lastname'],
+        password = content['password'],
+    )
+    return HttpResponse(json.dumps(content), content_type='application/json', status=200) 
+
+
+    
+
+    
 class beneficiaries(APIView):
     def get(self, request):
         beneficiaries1=beneficiaries2.objects.all()
@@ -25,11 +39,6 @@ def home(request):
 
 
 
-def govlogin(request):
-    # request.session['fav_color'] = 'blue'
-    #form =AuthenticationForm()
-    #print ('dsaad =>  ', request.session['fav_color'])
-    return render(request,'govlogin.html')
 
 def intermediatorloginform(request):
     if request.method =="POST":

@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^beneficiaries/',views.beneficiaries,name="beneficiaries"),
     path('admin/', admin.site.urls),
     url(r'^home/', views.home, name="home"),
-    url(r'^govlogin/$',views.govlogin, name="govlogin"),
-    url(r'^intermediatorloginform/$',views.intermediatorloginform, name="intermediatorloginform")
-    
+    url(r'^intermediatorloginform/$',views.intermediatorloginform, name="intermediatorloginform"),
+    url(r'^signup/$', views.signup_view, name="signup"),
+    url(r'^login/$', views.login_view, name="login")
 ]
