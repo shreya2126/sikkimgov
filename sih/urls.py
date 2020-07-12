@@ -23,10 +23,9 @@ from sikkimgov import views as sikkimgov_views
 
 
 urlpatterns = [
-    url(r'^beneficiaries/',views.beneficiaries,name="beneficiaries"),
+    url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
     path('admin/', admin.site.urls),
-    url(r'^home/', views.home, name="home"),
-    url(r'^intermediatorloginform/$',views.intermediatorloginform, name="intermediatorloginform"),
-    url(r'^signup/$', views.signup_view, name="signup"),
-    url(r'^login/$', views.login_view, name="login")
+    
+    url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="intermediatorloginform")
 ]
+  
