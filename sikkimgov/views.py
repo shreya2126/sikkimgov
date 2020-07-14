@@ -34,30 +34,22 @@ class beneficiaries(APIView):
         serializer=beneficiariesSerializer(beneficiaries, many=True)
         return Response(serializer.data)
 
+    def post(self,request):
+        beneficiaries=beneficiaries2.objects.all()
+        serializer=beneficiariesSerializer(beneficiaries, many=True)
+        return Response(serializer.data)
+
+
+
 class intermediatorloginform(APIView):
     def get(self,request):
         intermediatorloginform=Intermediatorloginform.objects.all()
         serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
         return Response(serializer.data)
 
-        #intermediatorloginform.title=request.POST.get('title')
-        #intermediatorloginform.firstname=request.POST.get('firstname')
-        #intermediatorloginform.middlename=request.POST.get('middlename')
-        #intermediatorloginform.lastname=request.POST.get('lastname')
-        #intermediatorloginform.fathername=request.POST.get('fathername')
-        #intermediatorloginform.mothername=request.POST.get('mothername')
-        #intermediatorloginform.contactno=request.POST.get('contactno')
-        #intermediatorloginform.alternatecontactno=request.POST.get('alternatecontactno')
-        #intermediatorloginform.address=request.POST.get('address')
-        #intermediatorloginform.adhaarno=request.POST.get('adhaarno')
-        #intermediatorloginform.email=request.POST.get('email')
-       # intermediatorloginform.state=request.POST.get('state')
-       # intermediatorloginform.district=request.POST.get('district')
-        #intermediatorloginform.region=request.POST.get('region')
-        #intermediatorloginform.dateofbirth=request.POST.get('dateofbirth')
-        #intermediatorloginform.image=request.POST.get('image')
-       # intermediatorloginform=Intermediatorloginform(title=title, firstname=firstname, middlename=middlename, lastname=lastname, fathername=fathername, mothername=mothername, contactno=contactno, alternatecontactno=alternatecontactno, address=address, adhaarno=adhaarno, email=email, state=state, district=district, region=region, dateofbirth=dateofbirth)
-        #intermediatorloginform.save()
+    def post(self,request):
+        intermediatorloginform=Intermediatorloginform.objects.all()
+        serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
+        return Response(serializer.data)
 
-   # return render(request,'intermediatorloginform.html')
 
