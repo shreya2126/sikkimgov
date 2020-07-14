@@ -1,5 +1,5 @@
 from django.db import models
-from django.db import models
+
 
 
 
@@ -27,8 +27,8 @@ class Intermediatorloginform(models.Model):
     lastname=models.CharField(max_length=20)
     fathername =models.CharField(max_length=20)   
     mothername=models.CharField(max_length=20)
-    contactno=models.IntegerField(max_length=10)
-    alternatecontactno=models.IntegerField(max_length=10)
+    contactno=models.IntegerField()
+    alternatecontactno=models.IntegerField()
    # address=models.CharField(max_length=200)
     adhaarno=models.IntegerField(primary_key=True)
     email=models.CharField(max_length=10)
@@ -38,3 +38,7 @@ class Intermediatorloginform(models.Model):
     dateofbirth=models.DateField(null=True, blank=True)
     image=models.ImageField(upload_to='image')
 
+
+class UserLogin(models.Model):
+    userid = models.CharField(max_length=500,unique=True)
+    password = models.CharField(max_length=500)

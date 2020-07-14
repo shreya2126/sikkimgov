@@ -11,6 +11,11 @@ from .serializers import beneficiariesSerializer
 from .serializers import IntermediatorloginformSerializer
 from datetime import datetime
 import json
+from . import models
+import jwt
+from rest_framework_simplejwt.tokens import RefreshToken
+from . import models,serializers
+from rest_framework import generics
 
 
 @csrf_exempt
@@ -53,3 +58,39 @@ class intermediatorloginform(APIView):
         return Response(serializer.data)
 
 
+
+class UserLogin(generics.GenericAPIView):
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+
+        return {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                }
+    serializer_class = serializers.UserLoginSerializer
+    def post(self, request, *args, **kwargs):
+
+        if not request.data:
+            return Response({"Error": "Please provide username/password"}, status="400")
+        idd = request.data['userid']
+        password = request.data['password']
+        try:
+            user = models.UserLogin.objects.get(userid=idd, password=password)
+        except:
+                return Response({"Error": "Invalid username/password"}, status="400")
+        if user:
+            jwt_token = self.get_tokens_for_user(user)
+            payload = jwt.decode(jwt_token['access'], 'SECRET_KEY')
+            return Response({
+                "access" : jwt_token,
+                'payload' : payload,
+                'type': 'user'
+                }
+            )
+        else:
+            print("124")
+            return Response(
+              {'Error': "Invalid credentials"},
+              status=400,
+              content_type="application/json"
+            )

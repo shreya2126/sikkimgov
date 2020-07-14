@@ -25,7 +25,15 @@ from sikkimgov import views as sikkimgov_views
 urlpatterns = [
     url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
     path('admin/', admin.site.urls),
-    
-    url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="intermediatorloginform")
+    url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="intermediatorloginform"),
+    path('scheme/',include('schemes.urls')),
+    path('user/',include('sikkimgov.urls')),
 ]
-  
+
+
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
