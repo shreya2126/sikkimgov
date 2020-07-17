@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="intermediatorloginform"),
     path('scheme/',include('schemes.urls')),
     path('user/',include('sikkimgov.urls')),
+    path('login',views.UserLogin.as_view()),
+    path('intermediatorlogin',views.intermediatorLogin.as_view())
 ]
 
 

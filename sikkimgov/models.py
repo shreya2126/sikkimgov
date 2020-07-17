@@ -16,6 +16,8 @@ class beneficiaries(models.Model):
     accountno=models.IntegerField()
     IFSC=models.CharField(max_length=50)
     areafland=models.IntegerField()
+    adhaarimage=models.ImageField(upload_to='adhaarimage',null=True, blank=True)
+    registryimage=models.ImageField(upload_to='registryimage',null=True, blank=True)
 
     def _str_(self):
         return self.firstname
@@ -36,9 +38,14 @@ class Intermediatorloginform(models.Model):
     district=models.CharField(max_length=200, null=True, blank=True)
     region=models.CharField(max_length=200)
     dateofbirth=models.DateField(null=True, blank=True)
-    image=models.ImageField(upload_to='image')
-
+    adhaarimage=models.ImageField(upload_to='adhaarimage',null=True, blank=True)
+    
+    
 
 class UserLogin(models.Model):
     userid = models.CharField(max_length=500,unique=True)
     password = models.CharField(max_length=500)
+
+class intermediatorLogin(models.Model):
+    userid = models.CharField(max_length=500,unique=True)
+    password = models.CharField(max_length=500)    

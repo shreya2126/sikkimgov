@@ -44,6 +44,11 @@ class beneficiaries(APIView):
         serializer=beneficiariesSerializer(beneficiaries, many=True)
         return Response(serializer.data)
 
+def put(self,request):
+        beneficiaries=beneficiaries2.objects.all()
+        serializer=beneficiariesSerializer(beneficiaries, many=True)
+        return Response(serializer.data)
+
 
 
 class intermediatorloginform(APIView):
@@ -53,6 +58,11 @@ class intermediatorloginform(APIView):
         return Response(serializer.data)
 
     def post(self,request):
+        intermediatorloginform=Intermediatorloginform.objects.all()
+        serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
+        return Response(serializer.data)
+
+def put(self,request):
         intermediatorloginform=Intermediatorloginform.objects.all()
         serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
         return Response(serializer.data)
@@ -94,3 +104,39 @@ class UserLogin(generics.GenericAPIView):
               status=400,
               content_type="application/json"
             )
+
+class intermediatorLogin(generics.GenericAPIView):
+    def get_tokens_for_user(self, intermediator):
+        refresh = RefreshToken.for_intermediator(intermediator)
+
+        return {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                }
+    serializer_class = serializers.intermediatorLoginSerializer
+    def post(self, request, *args, **kwargs):
+
+        if not request.data:
+            return Response({"Error": "Please provide username/password"}, status="400")
+        idd = request.data['userid']
+        password = request.data['password']
+        try:
+            user = models.intermediatorLogin.objects.get(userid=idd, password=password)
+        except:
+                return Response({"Error": "Invalid username/password"}, status="400")
+        if user:
+            jwt_token = self.get_tokens_for_intermediator(intermediatorLogin)
+            payload = jwt.decode(jwt_token['access'], 'SECRET_KEY')
+            return Response({
+                "access" : jwt_token,
+                'payload' : payload,
+                'type': 'intermediator'
+                }
+            )
+        else:
+            print("124")
+            return Response(
+              {'Error': "Invalid credentials"},
+              status=400,
+              content_type="application/json"
+            )            
