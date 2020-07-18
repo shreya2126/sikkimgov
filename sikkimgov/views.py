@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import beneficiaries as beneficiaries2
+from rest_framework import viewsets
+from .models import beneficiaries
 from .models import Intermediatorloginform
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import beneficiariesSerializer 
@@ -29,23 +30,23 @@ def signup(request):
     )
     return HttpResponse(json.dumps(content), content_type='application/json', status=200) 
 
-
     
-
     
 class beneficiaries(APIView):
     def get(self,request):
-        beneficiaries=beneficiaries2.objects.all()
+        beneficiaries = models.beneficiaries.objects.all()
         serializer=beneficiariesSerializer(beneficiaries, many=True)
         return Response(serializer.data)
 
     def post(self,request):
-        beneficiaries=beneficiaries2.objects.all()
-        serializer=beneficiariesSerializer(beneficiaries, many=True)
-        return Response(serializer.data)
-
+        beneficiaries = models.beneficiaries.objects.all()
+        serializer=beneficiariesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        
 def put(self,request):
-        beneficiaries=beneficiaries2.objects.all()
+        beneficiaries = models.beneficiaries.objects.all()
         serializer=beneficiariesSerializer(beneficiaries, many=True)
         return Response(serializer.data)
 
@@ -59,7 +60,10 @@ class intermediatorloginform(APIView):
 
     def post(self,request):
         intermediatorloginform=Intermediatorloginform.objects.all()
-        serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
+        serializer=IntermediatorloginformSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.data)
 
 def put(self,request):

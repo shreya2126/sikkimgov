@@ -19,11 +19,14 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from sikkimgov import views
 from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
-from sikkimgov import views as sikkimgov_views
+from sikkimgov import  views as as_view
+from rest_framework import routers
+
 
 
 urlpatterns = [
     url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
+    
     path('admin/', admin.site.urls),
     url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="intermediatorloginform"),
     path('scheme/',include('schemes.urls')),
