@@ -47,5 +47,5 @@ class UserLogin(models.Model):
     password = models.CharField(max_length=500)
 
 class intermediatorLogin(models.Model):
-    userid = models.CharField(max_length=500,unique=True)
+    intermediatorid = models.CharField(max_length=500,unique=True)
     password = models.CharField(max_length=500)    

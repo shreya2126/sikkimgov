@@ -7,9 +7,11 @@ from rest_framework import status
 from rest_framework import viewsets
 from .models import beneficiaries
 from .models import Intermediatorloginform
+from .models import UserLogin
+from .models import intermediatorLogin
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import beneficiariesSerializer 
-from .serializers import IntermediatorloginformSerializer
+from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,UserLoginSerializer
 from datetime import datetime
 import json
 from . import models
@@ -45,7 +47,7 @@ class beneficiaries(APIView):
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         
-def put(self,request):
+    def put(self,request):
         beneficiaries = models.beneficiaries.objects.all()
         serializer=beneficiariesSerializer(beneficiaries, many=True)
         return Response(serializer.data)
@@ -66,7 +68,7 @@ class intermediatorloginform(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.data)
 
-def put(self,request):
+    def put(self,request):
         intermediatorloginform=Intermediatorloginform.objects.all()
         serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
         return Response(serializer.data)
@@ -110,8 +112,8 @@ class UserLogin(generics.GenericAPIView):
             )
 
 class intermediatorLogin(generics.GenericAPIView):
-    def get_tokens_for_user(self, intermediator):
-        refresh = RefreshToken.for_intermediator(intermediator)
+    def get_tokens_for_intermediator(self, intermediator):
+        refresh = RefreshToken.for_user(intermediator)
 
         return {
                 'refresh': str(refresh),
@@ -122,14 +124,14 @@ class intermediatorLogin(generics.GenericAPIView):
 
         if not request.data:
             return Response({"Error": "Please provide username/password"}, status="400")
-        idd = request.data['userid']
+        idd = request.data['intermediatorid']
         password = request.data['password']
         try:
-            user = models.intermediatorLogin.objects.get(userid=idd, password=password)
+            intermediator = models.intermediatorLogin.objects.get(intermediatorid=idd, password=password)
         except:
                 return Response({"Error": "Invalid username/password"}, status="400")
-        if user:
-            jwt_token = self.get_tokens_for_intermediator(intermediatorLogin)
+        if intermediator:
+            jwt_token = self.get_tokens_for_intermediator(intermediator)
             payload = jwt.decode(jwt_token['access'], 'SECRET_KEY')
             return Response({
                 "access" : jwt_token,
@@ -143,4 +145,4 @@ class intermediatorLogin(generics.GenericAPIView):
               {'Error': "Invalid credentials"},
               status=400,
               content_type="application/json"
-            )            
+            )
