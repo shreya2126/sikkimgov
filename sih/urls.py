@@ -21,14 +21,14 @@ from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 from sikkimgov import  views as as_view
 from rest_framework import routers
-
+#from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 
 urlpatterns = [
     url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
     
     path('admin/', admin.site.urls),
-    url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="intermediatorloginform"),
+    url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="Intermediatorloginform"),
     path('scheme/',include('schemes.urls')),
     path('user/',include('sikkimgov.urls')),
     path('login',views.UserLogin.as_view()),

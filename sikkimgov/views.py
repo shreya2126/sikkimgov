@@ -19,7 +19,12 @@ import jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import models,serializers
 from rest_framework import generics
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
+
+   
 
 @csrf_exempt
 def signup(request):
@@ -41,19 +46,15 @@ class beneficiaries(APIView):
         return Response(serializer.data)
 
     def post(self,request):
+
         beneficiaries = models.beneficiaries.objects.all()
         serializer=beneficiariesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.data)   
         
-    def put(self,request):
-        beneficiaries = models.beneficiaries.objects.all()
-        serializer=beneficiariesSerializer(beneficiaries, many=True)
-        return Response(serializer.data)
-
-
-
+    
 class intermediatorloginform(APIView):
     def get(self,request):
         intermediatorloginform=Intermediatorloginform.objects.all()
@@ -66,13 +67,22 @@ class intermediatorloginform(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class intermediatorlogindetail(APIView):
+    def get(self,request,intermediator_id):
+        intermediatorloginform=Intermediatorloginform.objects.get(id=intermediator_id)
+        serializer=IntermediatorloginformSerializer(intermediatorloginform)
         return Response(serializer.data)
 
-    def put(self,request):
-        intermediatorloginform=Intermediatorloginform.objects.all()
-        serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
-        return Response(serializer.data)
-
+    def put(self,request,intermediator_id):
+        
+        serializer=IntermediatorloginformSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+  
 
 
 class UserLogin(generics.GenericAPIView):

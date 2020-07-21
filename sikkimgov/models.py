@@ -22,7 +22,7 @@ class beneficiaries(models.Model):
     def _str_(self):
         return self.firstname
 
-class Intermediatorloginform(models.Model):
+class Intermediatorloginform(models.Model,):
     title=models.CharField(max_length=6)
     firstname=models.CharField(max_length=20)
     middlename=models.CharField(max_length=20)
@@ -33,7 +33,7 @@ class Intermediatorloginform(models.Model):
     alternatecontactno=models.IntegerField()
    # address=models.CharField(max_length=200)
     adhaarno=models.IntegerField(primary_key=True)
-    email=models.CharField(max_length=10)
+    email=models.CharField(max_length=100)
     state=models.CharField(max_length=200)
     district=models.CharField(max_length=200, null=True, blank=True)
     region=models.CharField(max_length=200)
@@ -43,9 +43,9 @@ class Intermediatorloginform(models.Model):
     
 
 class UserLogin(models.Model):
-    userid = models.CharField(max_length=500,unique=True)
-    password = models.CharField(max_length=500)
+    userid = models.IntegerField(max_length=500,unique=True)
+    password = models.IntegerField(max_length=500)
 
 class intermediatorLogin(models.Model):
-    intermediatorid = models.CharField(max_length=500,unique=True)
-    password = models.CharField(max_length=500)    
+    intermediatorid = models.IntegerField(max_length=500,unique=True)
+    password = models.IntegerField(max_length=500)    

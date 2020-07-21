@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import beneficiaries
 from .models import Intermediatorloginform,UserLogin,intermediatorLogin
 
+
+
 class beneficiariesSerializer(serializers.ModelSerializer):
     class Meta:
         model=beneficiaries
@@ -22,3 +24,7 @@ class intermediatorLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model=intermediatorLogin
         fields='__all__'                
+
+
+
+    
