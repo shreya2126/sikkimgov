@@ -23,10 +23,17 @@ from sikkimgov import  views as as_view
 from rest_framework import routers
 #from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
+router = routers.DefaultRouter()
+router.register('beneficiaries', views.beneficiaries)
+router.register('users', views.UserViewSet)
+router.register('groups', views.GroupViewSet)
 
 urlpatterns = [
-    url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
     
+    url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
+    path('classify/',views.call_model.as_view(),name="model"),
+    path('admin/', admin.site.urls),
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
     url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="Intermediatorloginform"),
     path('scheme/',include('schemes.urls')),
