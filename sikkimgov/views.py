@@ -22,9 +22,48 @@ from rest_framework import generics
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from .serializers import UserSerializer, GroupSerializer
+from django.shortcuts import render
+from django.contrib.auth.models import User, Group
+from django.http import JsonResponse
+from .ml import *
 
+class call_model(APIView):
+    def get(self,request, format=None):
+        obj = initial.objects.all()
+        serializer = callSerializer(obj, many=True)
+        predict = "No image posted! Post an image."
+        response = {'prediction' : predict, 'data': serializer.data}
+        return Response(response)
+            
 
-   
+    def post(self, request, format=None):
+        serializer=callSerializer(data=request.data) 
+        predict = 'No image posted!'
+        if serializer.is_valid():
+            serializer.save()
+            try:
+                path = "/home/saurav/Desktop/sih/serve/media-root/initial/" + str(request.data['img'])
+            except:
+                path = None
+            
+            if path is not None: 
+                if path[-2]=='p' or path[-2]=='P' or path[-2]=='e' or path[-2]=='E' or path[-2]=='n' or path[-2]=='N':
+                    predict = throw_result(path)
+                else:
+                    predict = "Image must be in jpg or jpeg or png format!"
+            response = {'prediction' : predict, 'data': serializer.data} 
+            try:
+                obj = get_object_or_404(initial, img__endswith= str(request.data['img']) )
+                print(obj)
+                # obj.delete()
+            except:
+                pass
+
+            return Response(response, status=status.HTTP_201_CREATED)   
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @csrf_exempt
 def signup(request):
@@ -156,3 +195,18 @@ class intermediatorLogin(generics.GenericAPIView):
               status=400,
               content_type="application/json"
             )
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+

@@ -18,6 +18,12 @@ class beneficiaries(models.Model):
     areafland=models.IntegerField()
     adhaarimage=models.ImageField(upload_to='adhaarimage',null=True, blank=True)
     registryimage=models.ImageField(upload_to='registryimage',null=True, blank=True)
+    phase1=models.ImageField(upload_to='phase1',null=True,blank=True)
+    phase2=models.ImageField(upload_to='phase2',null=True,blank=True)
+    phase3=models.ImageField(upload_to='phase3',null=True,blank=True)
+    phase4=models.ImageField(upload_to='phase4',null=True,blank=True)
+    phase5=models.ImageField(upload_to='phase5',null=True,blank=True)
+    phase6=models.ImageField(upload_to='phase6',null=True,blank=True)
 
     def _str_(self):
         return self.firstname
@@ -39,6 +45,14 @@ class Intermediatorloginform(models.Model,):
     region=models.CharField(max_length=200)
     dateofbirth=models.DateField(null=True, blank=True)
     adhaarimage=models.ImageField(upload_to='adhaarimage',null=True, blank=True)
+
+class initial(models.Model):
+    intrmed_adhaar = models.IntegerField(null=True, blank=True)
+    img = models.ImageField(upload_to='initial/')
+    # img =  models.CharField(max_length=40, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.intrmed_adhaar)    
     
     
 
