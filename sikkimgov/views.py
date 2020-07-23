@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
 from .models import beneficiaries
 from .models import Intermediatorloginform
 from .models import UserLogin
@@ -19,50 +20,7 @@ import jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import models,serializers
 from rest_framework import generics
-from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from .serializers import UserSerializer, GroupSerializer
-from django.shortcuts import render
-from django.contrib.auth.models import User, Group
-from django.http import JsonResponse
-from .ml import *
-
-class call_model(APIView):
-    def get(self,request, format=None):
-        obj = initial.objects.all()
-        serializer = callSerializer(obj, many=True)
-        predict = "No image posted! Post an image."
-        response = {'prediction' : predict, 'data': serializer.data}
-        return Response(response)
-            
-
-    def post(self, request, format=None):
-        serializer=callSerializer(data=request.data) 
-        predict = 'No image posted!'
-        if serializer.is_valid():
-            serializer.save()
-            try:
-                path = "/home/saurav/Desktop/sih/serve/media-root/initial/" + str(request.data['img'])
-            except:
-                path = None
-            
-            if path is not None: 
-                if path[-2]=='p' or path[-2]=='P' or path[-2]=='e' or path[-2]=='E' or path[-2]=='n' or path[-2]=='N':
-                    predict = throw_result(path)
-                else:
-                    predict = "Image must be in jpg or jpeg or png format!"
-            response = {'prediction' : predict, 'data': serializer.data} 
-            try:
-                obj = get_object_or_404(initial, img__endswith= str(request.data['img']) )
-                print(obj)
-                # obj.delete()
-            except:
-                pass
-
-            return Response(response, status=status.HTTP_201_CREATED)   
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from rest_framework.authentication import get_authorization_header
 
 
 @csrf_exempt
@@ -76,38 +34,133 @@ def signup(request):
     )
     return HttpResponse(json.dumps(content), content_type='application/json', status=200) 
 
-    
-    
-class beneficiaries(APIView):
-    def get(self,request):
-        beneficiaries = models.beneficiaries.objects.all()
-        serializer=beneficiariesSerializer(beneficiaries, many=True)
-        return Response(serializer.data)
+class benViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.beneficiaries
+    queryset = beneficiaries.objects.all()
 
-    def post(self,request):
+class benUpdate(generics.CreateAPIView):
+    serializer_class = serializers.BenUpdate
+    def post(self,request,*args,**kwargs):
+        token = get_authorization_header('Authorization')
+        if token == b'':
+            raise           #raise the exception here
+        try:
+            idd = jwt.decode('SECRET_KEY',token)
+        except:
+            pass
+        userid = request.GET.get('id')
+        firstname = request.data['firstname']
+        
+        lastname=request.data['lastname']
+        phoneno=request.data['phoneno']
+        address=request.data['address']
+        adhaarno=request.data['adhaarno']
+        bankname=request.data['bankname']
+        accountno=request.data['accountno']
+        IFSC=request.data['IFSC']
+        areafland=request.data['areaofland']
+        adhaarimage=request.data['adhaarimage']
+        registryimage=request.data['registryimage']
 
-        beneficiaries = models.beneficiaries.objects.all()
-        serializer=beneficiariesSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        return Response(serializer.data)   
+        #get all the data here
+        try:
+            user = models.beneficiaries.objects.get(id=userid)
+        except:
+            pass
+        user.firstname=firstname
+        user.lastname=lastname
+        user.phoneno=phoneno
+        user.address=address
+        user.adhaarno=adhaarno
+        user.bankname=bankname
+        user.accountno=accountno
+        user.IFSC=IFSC
+        user.areafland=areafland
+        user.adhaarimage=adhaarimage
+        user.registryimage=registryimage
+        #set all the fields here
+        user.save()
+        return Response({'success':'updated'})
+
+    #do this for intermediate login form and you are done 
+
+class beneficiaries(generics.ListCreateAPIView):
+    status=(status.HTTP_201_CREATED)
+    #     return Response(serializer.data)   
+    serializer_class = beneficiariesSerializer
+    def get_queryset(self):
+        idd = self.request.GET.get('id')
+        print(idd)
+        if idd:
+            return models.beneficiaries.objects.filter(id=idd)
+        queryset =  models.beneficiaries.objects.all()
+        return queryset
         
     
-class intermediatorloginform(APIView):
-    def get(self,request):
-        intermediatorloginform=Intermediatorloginform.objects.all()
-        serializer=IntermediatorloginformSerializer(intermediatorloginform, many=True)
-        return Response(serializer.data)
+class intermediatorViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.Intermediatorloginform
+    queryset = Intermediatorloginform.objects.all()
 
-    def post(self,request):
-        intermediatorloginform=Intermediatorloginform.objects.all()
-        serializer=IntermediatorloginformSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+class intermediatorUpdate(generics.CreateAPIView):
+    serializer_class = serializers.BenUpdate
+    def post(self,request,*args,**kwargs):
+        token = get_authorization_header('Authorization')
+        if token == b'':
+            raise           #raise the exception here
+            try:
+                idd = jwt.decode('SECRET_KEY',token)
+            except:
+                pass
+                userid = request.GET.get('id')
+                firstname = request.data['firstname']
+        
+                lastname=request.data['lastname']
+                contactno=request.data['contactno']
+                alternatecontactno=request.data['alternatecontactno']
+                adhaarno=request.data['adhaarno']
+                email=request.data['email']
+                state=request.data['state']
+                region=request.data['region']
+                dateofbirth=request.data['dateofbirth']
+                adhaarimage=request.data['adhaarimage']
+        
 
+        #get all the data here
+        try:
+            user = models.Intermediatorloginform.objects.get(id=userid)
+        except:
+            pass
+        user.firstname=firstname
+        user.lastname=lastname
+        user.contactno=contactno
+        user.alternatecontactno=alternatecontactno
+        user.adhaarno=adhaarno
+        user.email=email
+        user.state=state
+        user.district=district
+        user.region=region
+        user.dateofbirth=dateofbirth
+        user.adhaarimage=adhaarimage
+        
+        #set all the fields here
+        user.save()
+        return Response({'success':'updated'})
+
+class Intermediatorloginform(generics.ListCreateAPIView):
+    status=(status.HTTP_201_CREATED)
+    #     return Response(serializer.data)   
+    serializer_class = IntermediatorloginformSerializer
+    def get_queryset(self):
+        idd = self.request.GET.get('id')
+        print(idd)
+        if idd:
+            return models.Intermediatorloginform.objects.filter(id=idd)
+        queryset =  models.Intermediatorloginform.objects.all()
+        return queryset
+        
+
+    
+  
 class intermediatorlogindetail(APIView):
     def get(self,request,intermediator_id):
         intermediatorloginform=Intermediatorloginform.objects.get(id=intermediator_id)
@@ -115,14 +168,11 @@ class intermediatorlogindetail(APIView):
         return Response(serializer.data)
 
     def put(self,request,intermediator_id):
-        
         serializer=IntermediatorloginformSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-  
-
 
 class UserLogin(generics.GenericAPIView):
     def get_tokens_for_user(self, user):
@@ -160,6 +210,7 @@ class UserLogin(generics.GenericAPIView):
               content_type="application/json"
             )
 
+
 class intermediatorLogin(generics.GenericAPIView):
     def get_tokens_for_intermediator(self, intermediator):
         refresh = RefreshToken.for_user(intermediator)
@@ -195,18 +246,4 @@ class intermediatorLogin(generics.GenericAPIView):
               status=400,
               content_type="application/json"
             )
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
 

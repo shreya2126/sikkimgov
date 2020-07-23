@@ -19,24 +19,24 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from sikkimgov import views
 from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
-from sikkimgov import  views as as_view
+from sikkimgov import  views as view
 from rest_framework import routers
 #from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 router = routers.DefaultRouter()
-router.register('beneficiaries', views.beneficiaries)
-router.register('users', views.UserViewSet)
-router.register('groups', views.GroupViewSet)
+router.register('ben',view.benViewSet)
+router = routers.DefaultRouter()
+router.register('intermediator',view.intermediatorViewSet)
+# router.register()
 
 urlpatterns = [
+
+    path('beneficiaries',views.beneficiaries.as_view(),name="beneficiaries"),
     
-    url(r'^beneficiaries/',views.beneficiaries.as_view(),name="beneficiaries"),
-    path('classify/',views.call_model.as_view(),name="model"),
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('admin/', admin.site.urls),
-    url(r'^intermediatorloginform/$',views.intermediatorloginform.as_view(), name="Intermediatorloginform"),
+    path('Intermediatorloginform',views.Intermediatorloginform.as_view(), name="Intermediatorloginform"),
     path('scheme/',include('schemes.urls')),
+    path('router/',include(router.urls)),
     path('user/',include('sikkimgov.urls')),
     path('login',views.UserLogin.as_view()),
     path('intermediatorlogin',views.intermediatorLogin.as_view())
