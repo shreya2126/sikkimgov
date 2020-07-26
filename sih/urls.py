@@ -39,7 +39,9 @@ urlpatterns = [
     path('router/',include(router.urls)),
     path('user/',include('sikkimgov.urls')),
     path('login',views.UserLogin.as_view()),
-    path('intermediatorlogin',views.intermediatorLogin.as_view())
+    path('intermediatorlogin',views.intermediatorLogin.as_view()),
+ 
+    path('verify',views.Verify)
 ]
 
 

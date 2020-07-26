@@ -19,6 +19,8 @@ class beneficiaries(models.Model):
     areafland=models.IntegerField()
     adhaarimage=models.ImageField(upload_to='adhaarimage',null=True, blank=True)
     registryimage=models.ImageField(upload_to='registryimage',null=True, blank=True)
+    status = models.CharField(max_length=20,default='pending')
+    otp = models.CharField(max_length=20,null=True,blank=True,default=None)
 
     # def _str_(self):
     #     return self.firstname

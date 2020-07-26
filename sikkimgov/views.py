@@ -58,7 +58,7 @@ class benUpdate(generics.CreateAPIView):
         bankname=request.data['bankname']
         accountno=request.data['accountno']
         IFSC=request.data['IFSC']
-        areafland=request.data['areaofland']
+        areafland=request.data['areafland']
         adhaarimage=request.data['adhaarimage']
         registryimage=request.data['registryimage']
 
@@ -88,15 +88,83 @@ class beneficiaries(generics.ListCreateAPIView):
     status=(status.HTTP_201_CREATED)
     #     return Response(serializer.data)   
     serializer_class = beneficiariesSerializer
+
+    def post(self,request,*args,**kwargs):
+        import random
+        otp = random.randint(111111,999999)
+        #send the message here
+        firstname = request.data['firstname']
+        lastname=request.data['lastname']
+        phoneno=request.data['phoneno']
+        address=request.data['address']
+        adhaarno=request.data['adhaarno']
+        bankname=request.data['bankname']
+        accountno=request.data['accountno']
+        IFSC=request.data['IFSC']
+        areafland=request.data['areafland']
+        adhaarimage=request.data['adhaarimage']
+        registryimage=request.data['registryimage']
+
+        try:
+            user = models.beneficiaries.objects.create(firstname=firstname,otp=otp,lastname=lastname,phoneno=phoneno,address=address,
+            
+            adhaarno=adhaarno,bankname=bankname,accountno=accountno,IFSC=IFSC,areafland=areafland,adhaarimage=adhaarimage,registryimage=registryimage
+            )
+        except:
+            raise
+        from twilio.rest import Client
+
+
+# Your Account Sid and Auth Token from twilio.com/console
+# DANGER! This is insecure. See http://twil.io/secure
+        account_sid = 'AC7095a7f37c92f9f251b61fcc847ab524'
+        auth_token = '72a7a22a198f792a50507949d51c94c2'
+        client = Client(account_sid, auth_token)
+
+        message = client.messages.create(
+                                    body=otp,
+                                    from_='+19284400322',
+                                    to='+91'+str(phoneno)
+                                )
+
+        print(message.sid)
+        # user = models.beneficiaries.objects.create(lastname=lastname,otp=otp)   
+        # user = models.beneficiaries.objects.create(phoneno=phoneno,otp=otp)   
+        # user = models.beneficiaries.objects.create(address=address,otp=otp)   
+        # user = models.beneficiaries.objects.create(adhaarno=adhaarno,otp=otp)   
+        # user = models.beneficiaries.objects.create(bankname=bankname,otp=otp)   
+        # user = models.beneficiaries.objects.create(accountno=accountno,otp=otp)  
+        # user = models.beneficiaries.objects.create(IFSC=IFSC,otp=otp)   
+        # user = models.beneficiaries.objects.create(areafland=areafland,otp=otp)    
+        # user = models.beneficiaries.objects.create(adhaarimage=adhaarimage,otp=otp)   
+        # user = models.beneficiaries.objects.create(registryimage=registryimage,otp=otp)   
+         #create the user here
+
+        return Response({'success': 'otp sent','payload': user.id})
     def get_queryset(self):
         idd = self.request.GET.get('id')
-        print(idd)
         if idd:
             return models.beneficiaries.objects.filter(id=idd)
         queryset =  models.beneficiaries.objects.all()
         return queryset
         
-    
+from rest_framework import exceptions
+from rest_framework.decorators import api_view
+@api_view(['POST'])
+def Verify(request):
+    idd = request.GET.get('id')
+    otp = request.data.get('otp')
+    print(idd,otp)
+    if not otp and not id:
+        raise exceptions.NotAcceptable('error')
+    try:
+        user = models.beneficiaries.objects.get(id=int(idd),otp=str(otp))
+    except:
+        raise exceptions.NotAcceptable('error')
+    user.status="verified"
+    user.save()
+    return Response({'success':'otp verified'})
+
 class intermediatorViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.Intermediatorloginform
     queryset = Intermediatorloginform.objects.all()

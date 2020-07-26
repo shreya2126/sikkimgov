@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('login',views.UserLogin.as_view()),
+    # path('verify',views.Verify),
 ]
