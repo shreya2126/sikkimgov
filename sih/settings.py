@@ -159,8 +159,6 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': None,
 
-    'USER_ID_FIELD': 'userid',
-    'USER_ID_CLAIM': 'user_id',
     
     'USER_ID_FIELD': 'intermediatorid',
     'USER_ID_CLAIM': 'intermediator_id',

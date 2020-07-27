@@ -21,73 +21,69 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from . import models,serializers
 from rest_framework import generics
 from rest_framework.authentication import get_authorization_header
+from rest_framework.decorators import action
+from rest_framework.renderers import JSONRenderer
+import django_filters
 
-
-@csrf_exempt
-def signup(request):
-    content = json.loads(request.body.decode('utf-8'))
-    print ('dasdasd  =>  ', content)
-    emp = employees.objects.create(
-        firstname = content['firstname'],
-        lastname = content['lastname'],
-        password = content['password'],
-    )
-    return HttpResponse(json.dumps(content), content_type='application/json', status=200) 
 
 class benViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.beneficiaries
+    serializer_class = beneficiariesSerializer
     queryset = beneficiaries.objects.all()
+    lookup_field='id'
+   
 
-class benUpdate(generics.CreateAPIView):
-    serializer_class = serializers.BenUpdate
-    def post(self,request,*args,**kwargs):
-        token = get_authorization_header('Authorization')
-        if token == b'':
-            raise           #raise the exception here
-        try:
-            idd = jwt.decode('SECRET_KEY',token)
-        except:
-            pass
-        userid = request.GET.get('id')
-        firstname = request.data['firstname']
+# class benUpdate(generics.CreateAPIView):
+#     serializer_class = serializers.BenUpdate
+#     def post(self,request,*args,**kwargs):
+#         token = get_authorization_header('Authorization')
+#         if token == b'':
+#             raise           #raise the exception here
+#         try:
+#             idd = jwt.decode('SECRET_KEY',token)
+#         except:
+#             pass
+#         userid = request.GET.get('id')
+#         firstname = request.data['firstname']
         
-        lastname=request.data['lastname']
-        phoneno=request.data['phoneno']
-        address=request.data['address']
-        adhaarno=request.data['adhaarno']
-        bankname=request.data['bankname']
-        accountno=request.data['accountno']
-        IFSC=request.data['IFSC']
-        areafland=request.data['areafland']
-        adhaarimage=request.data['adhaarimage']
-        registryimage=request.data['registryimage']
+#         lastname=request.data['lastname']
+#         phoneno=request.data['phoneno']
+#         address=request.data['address']
+#         adhaarno=request.data['adhaarno']
+#         bankname=request.data['bankname']
+#         accountno=request.data['accountno']
+#         IFSC=request.data['IFSC']
+#         areafland=request.data['areafland']
+#         adhaarimage=request.data['adhaarimage']
+#         registryimage=request.data['registryimage']
 
-        #get all the data here
-        try:
-            user = models.beneficiaries.objects.get(id=userid)
-        except:
-            pass
-        user.firstname=firstname
-        user.lastname=lastname
-        user.phoneno=phoneno
-        user.address=address
-        user.adhaarno=adhaarno
-        user.bankname=bankname
-        user.accountno=accountno
-        user.IFSC=IFSC
-        user.areafland=areafland
-        user.adhaarimage=adhaarimage
-        user.registryimage=registryimage
-        #set all the fields here
-        user.save()
-        return Response({'success':'updated'})
+#         #get all the data here
+#         try:
+#             user = models.beneficiaries.objects.get(id=userid)
+#         except:
+#             pass
+#         user.firstname=firstname
+#         user.lastname=lastname
+#         user.phoneno=phoneno
+#         user.address=address
+#         user.adhaarno=adhaarno
+#         user.bankname=bankname
+#         user.accountno=accountno
+#         user.IFSC=IFSC
+#         user.areafland=areafland
+#         user.adhaarimage=adhaarimage
+#         user.registryimage=registryimage
+#         #set all the fields here
+#         user.save()
+#         return Response({'success':'updated'})
 
-    #do this for intermediate login form and you are done 
+
+#     #do this for intermediate login form and you are done 
 
 class beneficiaries(generics.ListCreateAPIView):
     status=(status.HTTP_201_CREATED)
     #     return Response(serializer.data)   
     serializer_class = beneficiariesSerializer
+    
 
     def post(self,request,*args,**kwargs):
         import random
@@ -129,17 +125,7 @@ class beneficiaries(generics.ListCreateAPIView):
 
         print(message.sid)
         # user = models.beneficiaries.objects.create(lastname=lastname,otp=otp)   
-        # user = models.beneficiaries.objects.create(phoneno=phoneno,otp=otp)   
-        # user = models.beneficiaries.objects.create(address=address,otp=otp)   
-        # user = models.beneficiaries.objects.create(adhaarno=adhaarno,otp=otp)   
-        # user = models.beneficiaries.objects.create(bankname=bankname,otp=otp)   
-        # user = models.beneficiaries.objects.create(accountno=accountno,otp=otp)  
-        # user = models.beneficiaries.objects.create(IFSC=IFSC,otp=otp)   
-        # user = models.beneficiaries.objects.create(areafland=areafland,otp=otp)    
-        # user = models.beneficiaries.objects.create(adhaarimage=adhaarimage,otp=otp)   
-        # user = models.beneficiaries.objects.create(registryimage=registryimage,otp=otp)   
-         #create the user here
-
+      
         return Response({'success': 'otp sent','payload': user.id})
     def get_queryset(self):
         idd = self.request.GET.get('id')
@@ -147,6 +133,10 @@ class beneficiaries(generics.ListCreateAPIView):
             return models.beneficiaries.objects.filter(id=idd)
         queryset =  models.beneficiaries.objects.all()
         return queryset
+
+    def get_object(self):
+        idd = self.kwargs['pk']
+        return self.get_queryset().filter(id=idd)    
         
 from rest_framework import exceptions
 from rest_framework.decorators import api_view
@@ -166,11 +156,12 @@ def Verify(request):
     return Response({'success':'otp verified'})
 
 class intermediatorViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.Intermediatorloginform
+    serializer_class = intermediatorLoginSerializer
     queryset = Intermediatorloginform.objects.all()
+    lookup_field = 'id'
 
 class intermediatorUpdate(generics.CreateAPIView):
-    serializer_class = serializers.BenUpdate
+    serializer_class = serializers.intermediatorUpdate
     def post(self,request,*args,**kwargs):
         token = get_authorization_header('Authorization')
         if token == b'':
@@ -225,58 +216,6 @@ class Intermediatorloginform(generics.ListCreateAPIView):
             return models.Intermediatorloginform.objects.filter(id=idd)
         queryset =  models.Intermediatorloginform.objects.all()
         return queryset
-        
-
-    
-  
-class intermediatorlogindetail(APIView):
-    def get(self,request,intermediator_id):
-        intermediatorloginform=Intermediatorloginform.objects.get(id=intermediator_id)
-        serializer=IntermediatorloginformSerializer(intermediatorloginform)
-        return Response(serializer.data)
-
-    def put(self,request,intermediator_id):
-        serializer=IntermediatorloginformSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
-class UserLogin(generics.GenericAPIView):
-    def get_tokens_for_user(self, user):
-        refresh = RefreshToken.for_user(user)
-
-        return {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                }
-    serializer_class = serializers.UserLoginSerializer
-    def post(self, request, *args, **kwargs):
-
-        if not request.data:
-            return Response({"Error": "Please provide username/password"}, status="400")
-        idd = request.data['userid']
-        password = request.data['password']
-        try:
-            user = models.UserLogin.objects.get(userid=idd, password=password)
-        except:
-                return Response({"Error": "Invalid username/password"}, status="400")
-        if user:
-            jwt_token = self.get_tokens_for_user(user)
-            payload = jwt.decode(jwt_token['access'], 'SECRET_KEY')
-            return Response({
-                "access" : jwt_token,
-                'payload' : payload,
-                'type': 'user'
-                }
-            )
-        else:
-            print("124")
-            return Response(
-              {'Error': "Invalid credentials"},
-              status=400,
-              content_type="application/json"
-            )
 
 
 class intermediatorLogin(generics.GenericAPIView):

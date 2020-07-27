@@ -10,7 +10,7 @@ class beneficiariesSerializer(serializers.ModelSerializer):
         model=beneficiaries
         fields="firstname","lastname","phoneno","address","adhaarno","bankname","accountno","IFSC","areafland","adhaarimage","registryimage"
  
-class BenUpdate(serializers.Serializer):        
+class BenUpdate(serializers.ModelSerializer):        
     firstname = serializers.CharField
     lastname=serializers.CharField
     phoneno=serializers.IntegerField
@@ -22,6 +22,8 @@ class BenUpdate(serializers.Serializer):
     areafland=serializers.IntegerField
     adhaarimage=serializers.ImageField
     registryimage=serializers.ImageField
+
+    
     
 
         
@@ -31,7 +33,7 @@ class IntermediatorloginformSerializer(serializers.ModelSerializer):
         model=Intermediatorloginform
         fields='__all__'       
        
-class intermediatorupdate(serializers.Serializer):
+class intermediatorUpdate(serializers.Serializer):
     firstname = serializers.CharField
     lastname=serializers.CharField
     fathername=serializers.CharField

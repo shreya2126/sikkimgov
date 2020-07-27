@@ -21,24 +21,29 @@ from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 from sikkimgov import  views as view
 from rest_framework import routers
-#from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
+#from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
+ 
 router = routers.DefaultRouter()
 router.register('ben',view.benViewSet)
-router = routers.DefaultRouter()
 router.register('intermediator',view.intermediatorViewSet)
+
+urlpatterns=router.urls
+
+
+
 # router.register()
 
 urlpatterns = [
 
-    path('beneficiaries',views.beneficiaries.as_view(),name="beneficiaries"),
+    path('ben/',include(router.urls)),
     
+ 
     path('admin/', admin.site.urls),
-    path('Intermediatorloginform',views.Intermediatorloginform.as_view(), name="Intermediatorloginform"),
+    path('Intermediatorloginform/',include(router.urls)),
     path('scheme/',include('schemes.urls')),
-    path('router/',include(router.urls)),
-    path('user/',include('sikkimgov.urls')),
-    path('login',views.UserLogin.as_view()),
+    #path('router/',include(router.urls)),
+    
     path('intermediatorlogin',views.intermediatorLogin.as_view()),
  
     path('verify',views.Verify)
