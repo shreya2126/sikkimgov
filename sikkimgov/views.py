@@ -32,52 +32,6 @@ class benViewSet(viewsets.ModelViewSet):
     lookup_field='id'
    
 
-# class benUpdate(generics.CreateAPIView):
-#     serializer_class = serializers.BenUpdate
-#     def post(self,request,*args,**kwargs):
-#         token = get_authorization_header('Authorization')
-#         if token == b'':
-#             raise           #raise the exception here
-#         try:
-#             idd = jwt.decode('SECRET_KEY',token)
-#         except:
-#             pass
-#         userid = request.GET.get('id')
-#         firstname = request.data['firstname']
-        
-#         lastname=request.data['lastname']
-#         phoneno=request.data['phoneno']
-#         address=request.data['address']
-#         adhaarno=request.data['adhaarno']
-#         bankname=request.data['bankname']
-#         accountno=request.data['accountno']
-#         IFSC=request.data['IFSC']
-#         areafland=request.data['areafland']
-#         adhaarimage=request.data['adhaarimage']
-#         registryimage=request.data['registryimage']
-
-#         #get all the data here
-#         try:
-#             user = models.beneficiaries.objects.get(id=userid)
-#         except:
-#             pass
-#         user.firstname=firstname
-#         user.lastname=lastname
-#         user.phoneno=phoneno
-#         user.address=address
-#         user.adhaarno=adhaarno
-#         user.bankname=bankname
-#         user.accountno=accountno
-#         user.IFSC=IFSC
-#         user.areafland=areafland
-#         user.adhaarimage=adhaarimage
-#         user.registryimage=registryimage
-#         #set all the fields here
-#         user.save()
-#         return Response({'success':'updated'})
-
-
-#     #do this for intermediate login form and you are done 
 
 class beneficiaries(generics.ListCreateAPIView):
     status=(status.HTTP_201_CREATED)
@@ -156,7 +110,7 @@ def Verify(request):
     return Response({'success':'otp verified'})
 
 class intermediatorViewSet(viewsets.ModelViewSet):
-    serializer_class = intermediatorLoginSerializer
+    serializer_class = IntermediatorloginformSerializer
     queryset = Intermediatorloginform.objects.all()
     lookup_field = 'id'
 

@@ -9,21 +9,7 @@ class beneficiariesSerializer(serializers.ModelSerializer):
         registryimage=serializers.ImageField
         model=beneficiaries
         fields="firstname","lastname","phoneno","address","adhaarno","bankname","accountno","IFSC","areafland","adhaarimage","registryimage"
- 
-class BenUpdate(serializers.ModelSerializer):        
-    firstname = serializers.CharField
-    lastname=serializers.CharField
-    phoneno=serializers.IntegerField
-    address=serializers.CharField
-    adhaarno=serializers.IntegerField
-    bankname=serializers.CharField
-    accountno=serializers.IntegerField
-    IFSC=serializers.CharField
-    areafland=serializers.IntegerField
-    adhaarimage=serializers.ImageField
-    registryimage=serializers.ImageField
 
-    
     
 
         
