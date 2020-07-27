@@ -43,7 +43,7 @@ urlpatterns = [
     path('Intermediatorloginform/',include(router.urls)),
     path('scheme/',include('schemes.urls')),
     #path('router/',include(router.urls)),
-    
+    url(r'^api/', include(router.urls)),
     path('intermediatorlogin',views.intermediatorLogin.as_view()),
  
     path('verify',views.Verify)
