@@ -36,7 +36,7 @@ urlpatterns=router.urls
 
 urlpatterns = [
 
-    
+    path('classify/',views.call_model.as_view(),name="model"),
     path('intermediatorlogin',views.intermediatorLogin.as_view()),
     path('verify',views.Verify),
     path('ben/',include(router.urls)),

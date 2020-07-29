@@ -1,16 +1,19 @@
 from rest_framework import serializers
-from .models import beneficiaries
+from .models import beneficiaries,initial
 from .models import Intermediatorloginform,UserLogin,intermediatorLogin
 
 
 class beneficiariesSerializer(serializers.ModelSerializer):
     class Meta:
-        adhaarimage = serializers.ImageField
-        registryimage=serializers.ImageField
         model=beneficiaries
-        fields="firstname","lastname","phoneno","address","adhaarno","bankname","accountno","IFSC","areafland","adhaarimage","registryimage"
+        fields=( 'firstname', 'lastname', 'phoneno', 'address', 'adhaarno', 'bankname', 'accountno', 'IFSC', 'areafland','longitude','latitude', 'adhaarimage', 'registryimage' )
 
-    
+
+class callSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model= initial
+        fields = ('id', 'img', 'intrmed_adhaar')
 
         
 class IntermediatorloginformSerializer(serializers.ModelSerializer):

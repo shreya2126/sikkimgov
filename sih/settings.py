@@ -109,17 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-#Twilio
-TWILIO_PHONE = config('TWILIO_PHONE', default=None)
-TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID', default=None)
-TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN', default=None)
-
-TWILIO_PHONE = +15302127224
-TWILIO_ACCOUNT_SID = "AC7f2f6533ded357c06d0316a60708e8b3"
-TWILIO_AUTH_TOKEN = "878b798f3bc55bf0ab1e8c246c0acbc8s"
-# Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'

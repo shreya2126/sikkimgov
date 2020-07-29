@@ -9,10 +9,10 @@ from rest_framework.viewsets import ModelViewSet
 from .models import beneficiaries
 from .models import Intermediatorloginform
 from .models import UserLogin
-from .models import intermediatorLogin
+from .models import intermediatorLogin,initial
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import beneficiariesSerializer 
-from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,UserLoginSerializer
+from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,UserLoginSerializer,callSerializer
 from datetime import datetime
 import json
 from . import models
@@ -24,8 +24,47 @@ from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import action
 from rest_framework.renderers import JSONRenderer
 import django_filters
+from .ml import *
 
 
+
+class call_model(APIView):
+    def get(self,request, format=None):
+        obj = initial.objects.all()
+        serializer = callSerializer(obj, many=True)
+        predict = "No image posted! Post an image."
+        response = {'prediction' : predict, 'data': serializer.data}
+        return Response(response)
+            
+
+    def post(self, request, format=None):
+        serializer=callSerializer(data=request.data) 
+        predict = 'No image posted!'
+        if serializer.is_valid():
+            serializer.save()
+            imgname = str(request.data['img']).replace(" ", "_").replace("(", "").replace(")", "")
+
+            try:
+                path = r"C:\Users\HP\nya\serve\media-root\initial" + imgname
+            except:
+                path = None
+            
+            if path is not None: 
+                if path[-2]=='p' or path[-2]=='P' or path[-2]=='e' or path[-2]=='E' or path[-2]=='n' or path[-2]=='N':
+                    predict = throw_result(path)
+                else:
+                    predict = "Image must be in jpg or jpeg or png format!"
+            response = {'prediction' : predict, 'data': serializer.data} 
+            try:
+                obj = get_object_or_404(initial, img__endswith= imgname )
+                print(obj)
+                obj.delete()
+            except:
+                pass
+
+            return Response(response, status=status.HTTP_201_CREATED)   
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class benViewSet(viewsets.ModelViewSet):
     serializer_class = beneficiariesSerializer
     queryset = beneficiaries.objects.all()
@@ -62,22 +101,21 @@ class beneficiaries(generics.ListCreateAPIView):
             )
         except:
             raise
-        from twilio.rest import Client
+        
 
+            url = "https://www.fast2sms.com/dev/bulk"
 
-# Your Account Sid and Auth Token from twilio.com/console
-# DANGER! This is insecure. See http://twil.io/secure
-        account_sid = 'AC7095a7f37c92f9f251b61fcc847ab524'
-        auth_token = '72a7a22a198f792a50507949d51c94c2'
-        client = Client(account_sid, auth_token)
+            payload = "sender_id=FSTSMS&language=english&route=qt&numbers=9729134259&message=32637 &variables={#BB#}&variables_values=5252"
+            headers = {
+            'authorization': "F2mBgj87SD5aXPklRJsUh4duG0fYVcvK9Cqpn6tiTWzNLHZ1by4V8BmU1ZMAI52n3vhOLzyo0kYDiRrf",
+            'cache-control': "no-cache",
+            'content-type': "application/x-www-form-urlencoded"
+    }
 
-        message = client.messages.create(
-                                    body=otp,
-                                    from_='+19284400322',
-                                    to='+91'+str(phoneno)
-                                )
+        response = requests.request("POST", url, data=payload, headers=headers)
 
-        print(message.sid)
+        print(response.text)
+
         # user = models.beneficiaries.objects.create(lastname=lastname,otp=otp)   
       
         return Response({'success': 'otp sent','payload': user.id})
@@ -158,19 +196,6 @@ class intermediatorUpdate(generics.CreateAPIView):
         #set all the fields here
         user.save()
         return Response({'success':'updated'})
-
-class Intermediatorloginform(generics.ListCreateAPIView):
-    status=(status.HTTP_201_CREATED)
-    #     return Response(serializer.data)   
-    serializer_class = IntermediatorloginformSerializer
-    def get_queryset(self):
-        idd = self.request.GET.get('id')
-        print(idd)
-        if idd:
-            return models.Intermediatorloginform.objects.filter(id=idd)
-        queryset =  models.Intermediatorloginform.objects.all()
-        return queryset
-
 
 class intermediatorLogin(generics.GenericAPIView):
     def get_tokens_for_intermediator(self, intermediator):
