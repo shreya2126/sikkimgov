@@ -12,7 +12,7 @@ from .models import UserLogin
 from .models import intermediatorLogin,initial
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import beneficiariesSerializer 
-from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,UserLoginSerializer,callSerializer
+from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,UserLoginSerializer,initialSerializer
 from datetime import datetime
 import json
 from . import models
@@ -28,24 +28,25 @@ from .ml import *
 
 
 
-class call_model(APIView):
+class initialViewSet(viewsets.ModelViewSet):
+    serializer_class = initialSerializer
+    queryset = initial.objects.all()
     def get(self,request, format=None):
-        obj = initial.objects.all()
-        serializer = callSerializer(obj, many=True)
+        
         predict = "No image posted! Post an image."
-        response = {'prediction' : predict, 'data': serializer.data}
+        response = {'prediction' : predict, 'data': serializer_class.data}
         return Response(response)
             
 
     def post(self, request, format=None):
-        serializer=callSerializer(data=request.data) 
+        
         predict = 'No image posted!'
-        if serializer.is_valid():
-            serializer.save()
+        if serializer_class.is_valid():
+            serializer_class.save()
             imgname = str(request.data['img']).replace(" ", "_").replace("(", "").replace(")", "")
 
             try:
-                path = r"C:\Users\HP\nya\serve\media-root\initial" + imgname
+                path = r"C:\Users\HP\sikkimgov\serve\media-root\initial" + imgname
             except:
                 path = None
             
@@ -58,13 +59,14 @@ class call_model(APIView):
             try:
                 obj = get_object_or_404(initial, img__endswith= imgname )
                 print(obj)
-                obj.delete()
+                obj.save()
             except:
                 pass
 
             return Response(response, status=status.HTTP_201_CREATED)   
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class benViewSet(viewsets.ModelViewSet):
     serializer_class = beneficiariesSerializer
     queryset = beneficiaries.objects.all()

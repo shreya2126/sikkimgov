@@ -27,6 +27,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register('ben',view.benViewSet)
 router.register('intermediator',view.intermediatorViewSet)
+router.register('initial',views.initialViewSet)
 
 urlpatterns=router.urls
 
@@ -36,7 +37,7 @@ urlpatterns=router.urls
 
 urlpatterns = [
 
-    path('classify/',views.call_model.as_view(),name="model"),
+    path('initial/',include(router.urls)),
     path('intermediatorlogin',views.intermediatorLogin.as_view()),
     path('verify',views.Verify),
     path('ben/',include(router.urls)),

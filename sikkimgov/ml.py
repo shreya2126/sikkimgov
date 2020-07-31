@@ -6,7 +6,7 @@ import numpy as np
 np.set_printoptions(suppress=True)
 
 # Load the model
-model = tensorflow.keras.models.load_model (r'C:\Users\HP\nya\sikkimgov\keras_model.h5')
+model = tensorflow.keras.models.load_model (r'C:\Users\HP\sikkimgov\sikkimgov\keras_model.h5')
 
 # Create the array of the right shape to feed into the keras model
 # The 'length' or number of images you can put into the array is
@@ -62,4 +62,4 @@ def throw_result(path):
     else:
         prediction = 'PHASE_6'
         
-    return prediction
+    return prediction 
