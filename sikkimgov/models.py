@@ -19,16 +19,19 @@ class beneficiaries(models.Model):
     longitude = models.DecimalField(max_digits=11, decimal_places=7,null=True,blank=True)
     status = models.CharField(max_length=20,default='pending')
     otp = models.CharField(max_length=20,null=True,blank=True,default=None)
+    phase1=models.ImageField(upload_to='phase1',null=True,blank=True)
+    phase2=models.ImageField(upload_to='phase2',null=True,blank=True)
+    phase3=models.ImageField(upload_to='phase3',null=True,blank=True)
+    phase4=models.ImageField(upload_to='phase4',null=True,blank=True)
+    phase5=models.ImageField(upload_to='phase5',null=True,blank=True)
+    phase6=models.ImageField(upload_to='phase6',null=True,blank=True)
     
     
 class initial(models.Model):
-    id=models.AutoField(primary_key=True)
     
     img = models.ImageField(upload_to='initial/')
-   
-
     def __str__(self):
-        return str(self.id, self.img)    
+        return str(self.img)    
 
 
 class Intermediatorloginform(models.Model):
