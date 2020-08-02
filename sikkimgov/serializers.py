@@ -6,7 +6,7 @@ from .models import Intermediatorloginform,intermediatorLogin
 class beneficiariesSerializer(serializers.ModelSerializer):
     class Meta:
         model=beneficiaries
-        fields=('id','firstname', 'lastname', 'phoneno', 'address', 'adhaarno', 'bankname', 'accountno', 'IFSC', 'areafland','longitude','latitude', 'adhaarimage', 'registryimage' )
+        fields=('id','firstname', 'lastname', 'phoneno', 'address', 'adhaarno', 'bankname', 'accountno', 'IFSC', 'areafland','longitude','latitude' )
 
 
 class initialSerializer(serializers.ModelSerializer):
