@@ -2,37 +2,37 @@ import tensorflow.keras
 from PIL import Image, ImageOps
 import numpy as np
 
-# Disable scientific notation for clarity
+# # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
-# Load the model
+# # Load the model
 model = tensorflow.keras.models.load_model (r'C:\Users\HP\sikkimgov\sikkimgov\keras_model.h5')
 
-# Create the array of the right shape to feed into the keras model
-# The 'length' or number of images you can put into the array is
-# determined by the first position in the shape tuple, in this case 1.
+# # Create the array of the right shape to feed into the keras model
+# # The 'length' or number of images you can put into the array is
+# # determined by the first position in the shape tuple, in this case 1.
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
-# Replace this with the path to your image
+# # Replace this with the path to your image
 
 
-#resize the image to a 224x224 with the same strategy as in TM2:
-#resizing the image to be at least 224x224 and then cropping from the center
+# #resize the image to a 224x224 with the same strategy as in TM2:
+# #resizing the image to be at least 224x224 and then cropping from the center
 
 
-#turn the image into a numpy array
+# #turn the image into a numpy array
 
 
-# display the resized image
-# image.show()
+# # display the resized image
+# # image.show()
 
-# Normalize the image
-
-
-# Load the image into the array
+# # Normalize the image
 
 
-# run the inference
+# # Load the image into the array
+
+
+# # run the inference
 
 
 
@@ -62,4 +62,4 @@ def throw_result(path):
     else:
         prediction = 'PHASE_6'
         
-    return prediction 
+    return prediction

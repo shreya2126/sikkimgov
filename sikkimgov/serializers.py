@@ -1,26 +1,35 @@
 from rest_framework import serializers
 from .models import beneficiaries,initial
-from .models import Intermediatorloginform,UserLogin,intermediatorLogin
+from .models import Intermediatorloginform,intermediatorLogin
 
 
 class beneficiariesSerializer(serializers.ModelSerializer):
     class Meta:
         model=beneficiaries
-        fields=('id','firstname', 'lastname', 'phoneno', 'address', 'adhaarno', 'bankname', 'accountno', 'IFSC', 'areafland','longitude','latitude', 'adhaarimage', 'registryimage','phase1', 'phase2', 'phase3', 'phase4', 'phase5', 'phase6' )
+        fields=('id','firstname', 'lastname', 'phoneno', 'address', 'adhaarno', 'bankname', 'accountno', 'IFSC', 'areafland','longitude','latitude', 'adhaarimage', 'registryimage' )
 
 
 class initialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model= initial
-        fields = ('id', 'img')
+        fields= '__all__' 
+
+
+class beniSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model= initial
+        fields='__all__'
 
         
 class IntermediatorloginformSerializer(serializers.ModelSerializer):
     class Meta:
         adhaarimage = serializers.ImageField
         model=Intermediatorloginform
-        fields='__all__'       
+        fields='__all__'
+   
+
        
 class intermediatorUpdate(serializers.Serializer):
     firstname = serializers.CharField
@@ -37,16 +46,8 @@ class intermediatorUpdate(serializers.Serializer):
     adhaarimage=serializers.ImageField
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=UserLogin
-        fields='__all__'
 
 class intermediatorLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model=intermediatorLogin
-        fields='__all__'                
-
-
-
-    
+        fields='__all__'

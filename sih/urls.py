@@ -27,17 +27,18 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register('ben',view.benViewSet)
 router.register('intermediator',view.intermediatorViewSet)
-router.register('initial',views.initialViewSet)
+# router.register('initial',views.initialViewSet)
 
 urlpatterns=router.urls
 
-
-
 # router.register()
+
 
 urlpatterns = [
 
-    path('initial/',include(router.urls)),
+    path('',include(router.urls)),
+    path('initial/',views.initialViewSet.as_view()),
+    path('bene/',views.benefViewSet.as_view()),
     path('intermediatorlogin',views.intermediatorLogin.as_view()),
     path('verify',views.Verify),
     path('ben/',include(router.urls)),

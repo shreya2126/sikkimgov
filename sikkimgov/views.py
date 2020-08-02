@@ -8,11 +8,10 @@ from rest_framework import viewsets
 from rest_framework.viewsets import ModelViewSet
 from .models import beneficiaries
 from .models import Intermediatorloginform
-from .models import UserLogin
 from .models import intermediatorLogin,initial
 from django.views.decorators.csrf import csrf_exempt
-from .serializers import beneficiariesSerializer 
-from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,UserLoginSerializer,initialSerializer
+from .serializers import beneficiariesSerializer , beniSerializer
+from .serializers import IntermediatorloginformSerializer,intermediatorLoginSerializer,initialSerializer
 from datetime import datetime
 import json
 from . import models
@@ -26,46 +25,84 @@ from rest_framework.renderers import JSONRenderer
 import django_filters
 from .ml import *
 
-
-
-class initialViewSet(viewsets.ModelViewSet):
-    serializer_class = initialSerializer
-    queryset = initial.objects.all()
-    def get(self,request, format=None):
-        
+class benefViewSet(APIView):
+    def get(self, request, format=None):
+        obj = initial.objects.all()
+        serializer = beniSerializer(obj, many=True)
         predict = "No image posted! Post an image."
-        response = {'prediction' : predict, 'data': serializer_class.data}
+        response = {'prediction': predict, 'data': serializer.data}
         return Response(response)
-            
 
     def post(self, request, format=None):
-        
+        serializer = beniSerializer(data=request.data)
         predict = 'No image posted!'
-        if serializer_class.is_valid():
-            serializer_class.save()
+        if serializer.is_valid():
+            serializer.save()
             imgname = str(request.data['img']).replace(" ", "_").replace("(", "").replace(")", "")
 
             try:
-                path = r"C:\Users\HP\sikkimgov\serve\media-root\initial" + imgname
+                path = r"C:\Users\HP\sikkimgov\serve\media-root\initial" + '\\' + imgname
             except:
                 path = None
-            
-            if path is not None: 
-                if path[-2]=='p' or path[-2]=='P' or path[-2]=='e' or path[-2]=='E' or path[-2]=='n' or path[-2]=='N':
+
+            if path is not None:
+                if path[-2] == 'p' or path[-2] == 'P' or path[-2] == 'e' or path[-2] == 'E' or path[-2] == 'n' or \
+                        path[-2] == 'N':
                     predict = throw_result(path)
                 else:
                     predict = "Image must be in jpg or jpeg or png format!"
-            response = {'prediction' : predict, 'data': serializer.data} 
+            response = {'prediction': predict, 'data': serializer.data}
             try:
-                obj = get_object_or_404(initial, img__endswith= imgname )
+                obj = get_object_or_404(beneficiaries, adhaarno=int(request.data['beni_adhar']))
                 print(obj)
+                obj.level = predict
                 obj.save()
             except:
                 pass
 
-            return Response(response, status=status.HTTP_201_CREATED)   
+            return Response(response, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class initialViewSet(APIView):
+    def get(self, request, format=None):
+        obj = initial.objects.all()
+        serializer = initialSerializer(obj,many=True)
+        predict = "No image posted! Post an image."
+        response = {'prediction': predict, 'data': serializer.data}
+        return Response(response)
+
+    def post(self, request, format=None):
+        serializer = initialSerializer(data=request.data)
+        predict = 'No image posted!'
+        if serializer.is_valid():
+            serializer.save()
+            imgname = str(request.data['img']).replace(" ", "_").replace("(", "").replace(")", "")
+
+            try:
+                path = r"C:\Users\HP\sikkimgov\serve\media-root\initial" + '\\' + imgname
+            except:
+                path = None
+
+            if path is not None:
+                if path[-2] == 'p' or path[-2] == 'P' or path[-2] == 'e' or path[-2] == 'E' or path[-2] == 'n' or \
+                        path[-2] == 'N':
+                    predict = throw_result(path)
+                else:
+                    predict = "Image must be in jpg or jpeg or png format!"
+            response = {'prediction': predict, 'data': serializer.data}
+            try:
+                obj = get_object_or_404(initial, img__endswith=imgname)
+                print(obj)
+                obj.delete()
+            except:
+                pass
+
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class benViewSet(viewsets.ModelViewSet):
     serializer_class = beneficiariesSerializer
@@ -73,14 +110,13 @@ class benViewSet(viewsets.ModelViewSet):
     lookup_field='id'
    
 
-
 class beneficiaries(generics.ListCreateAPIView):
     status=(status.HTTP_201_CREATED)
     #     return Response(serializer.data)   
     serializer_class = beneficiariesSerializer
     
 
-    def post(self,request,*args,**kwargs):
+    def post(self,request,args,*kwargs):
         import random
         otp = random.randint(111111,999999)
         #send the message here
@@ -156,7 +192,7 @@ class intermediatorViewSet(viewsets.ModelViewSet):
 
 class intermediatorUpdate(generics.CreateAPIView):
     serializer_class = serializers.intermediatorUpdate
-    def post(self,request,*args,**kwargs):
+    def post(self,request,args,*kwargs):
         token = get_authorization_header('Authorization')
         if token == b'':
             raise           #raise the exception here
@@ -234,4 +270,3 @@ class intermediatorLogin(generics.GenericAPIView):
               status=400,
               content_type="application/json"
             )
-

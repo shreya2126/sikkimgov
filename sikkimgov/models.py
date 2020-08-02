@@ -19,20 +19,17 @@ class beneficiaries(models.Model):
     longitude = models.DecimalField(max_digits=11, decimal_places=7,null=True,blank=True)
     status = models.CharField(max_length=20,default='pending')
     otp = models.CharField(max_length=20,null=True,blank=True,default=None)
-    phase1=models.ImageField(upload_to='phase1',null=True,blank=True)
-    phase2=models.ImageField(upload_to='phase2',null=True,blank=True)
-    phase3=models.ImageField(upload_to='phase3',null=True,blank=True)
-    phase4=models.ImageField(upload_to='phase4',null=True,blank=True)
-    phase5=models.ImageField(upload_to='phase5',null=True,blank=True)
-    phase6=models.ImageField(upload_to='phase6',null=True,blank=True)
+    level = models.CharField(max_length=50, null=True, blank=True)
+  
     
     
-class initial(models.Model):
-    
-    img = models.ImageField(upload_to='initial/')
-    def __str__(self):
-        return str(self.img)    
 
+class initial(models.Model): 
+    img = models.ImageField(upload_to='initial/')
+    beni_adhar = models.IntegerField(unique=True, null=True, blank=True) 
+   
+    def _str_(self):
+        return str(self.beni_adhar)
 
 class Intermediatorloginform(models.Model):
     id = models.AutoField(primary_key=True)
@@ -49,9 +46,7 @@ class Intermediatorloginform(models.Model):
     dateofbirth=models.DateField(null=True, blank=True)
     adhaarimage=models.ImageField(upload_to='adhaarimage',null=True, blank=True)
 
-class UserLogin(models.Model):
-    userid = models.CharField(max_length=30,unique=True)
-    password = models.CharField(max_length=20)
+
 
 class intermediatorLogin(models.Model):
     intermediatorid = models.CharField(max_length=30,unique=True)
