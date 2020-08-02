@@ -25,6 +25,8 @@ from rest_framework.renderers import JSONRenderer
 import django_filters
 from .ml import *
 
+
+
 class benefViewSet(APIView):
     def get(self, request, format=None):
         obj = initial.objects.all()
@@ -108,6 +110,17 @@ class benViewSet(viewsets.ModelViewSet):
     serializer_class = beneficiariesSerializer
     queryset = beneficiaries.objects.all()
     lookup_field='id'
+
+
+class BenView(generics.ListAPIView):
+    serializer_class = beneficiariesSerializer
+    def get_queryset(self):
+        idd = self.request.GET.get('id')
+        return models.beneficiaries.objects.filter(id=idd)
+   
+def BenGet(request):
+    idd = request.GET.get('id')
+    data = models.beneficiaries.objects.filter(id=idd)    
    
 
 class beneficiaries(generics.ListCreateAPIView):

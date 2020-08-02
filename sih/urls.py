@@ -37,7 +37,9 @@ urlpatterns=router.urls
 urlpatterns = [
 
     path('',include(router.urls)),
+    path('get',view.BenView.as_view()),
     path('initial/',views.initialViewSet.as_view()),
+    path('user/login',views.intermediatorLogin.as_view()),
     path('bene/',views.benefViewSet.as_view()),
     path('intermediatorlogin',views.intermediatorLogin.as_view()),
     path('verify',views.Verify),
